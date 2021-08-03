@@ -1,5 +1,5 @@
 resource "aws_codebuild_project" "tf-plan" {
-  name          = "sam-tf-cicd-plan2"
+  name          = "tf-cicd-plan"
   description   = "Plan stage for terraform"
   service_role  = aws_iam_role.tf-codebuild-role.arn
 
@@ -24,7 +24,7 @@ resource "aws_codebuild_project" "tf-plan" {
 }
 
 resource "aws_codebuild_project" "tf-apply" {
-  name          = "sam-tf-cicd-apply"
+  name          = "tf-cicd-apply"
   description   = "Apply stage for terraform"
   service_role  = aws_iam_role.tf-codebuild-role.arn
 
@@ -51,7 +51,7 @@ resource "aws_codebuild_project" "tf-apply" {
 
 resource "aws_codepipeline" "cicd_pipeline" {
 
-    name = "sam-tf-cicd"
+    name = "tf-cicd"
     role_arn = aws_iam_role.tf-codepipeline-role.arn
 
     artifact_store {
@@ -70,7 +70,7 @@ resource "aws_codepipeline" "cicd_pipeline" {
             output_artifacts = ["tf-code"]
             configuration = {
                 FullRepositoryId = "Sorfali/cicd_pipline"
-                BranchName   = "master"
+                BranchName   = "main"
                 ConnectionArn = var.codestar_connector_credentials
                 OutputArtifactFormat = "CODE_ZIP"
             }
@@ -102,7 +102,7 @@ resource "aws_codepipeline" "cicd_pipeline" {
             owner = "AWS"
             input_artifacts = ["tf-code"]
             configuration = {
-                ProjectName = "sam-tf-cicd-apply"
+                ProjectName = "tf-cicd-apply"
             }
         }
     }
